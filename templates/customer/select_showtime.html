@@ -1,0 +1,53 @@
+{% extends "customer/_base.html" %}
+{% block title %}Select Showtime — {{ movie.title }}{% endblock %}
+
+{% block content %}
+<div class="container" style="padding-top:24px;">
+  <a href="{% url 'movies:detail' movie.pk %}" class="muted">&larr; Back</a>
+
+  <div class="movie-summary mt-2">
+    <div class="thumb" {% if movie.poster %}style="background-image:url({{ movie.poster.url }});background-size:cover;"{% endif %}></div>
+    <div>
+      <h3>{{ movie.title }}</h3>
+      <span class="pill pill-genre">{{ movie.primary_genre }}</span>
+    </div>
+  </div>
+
+  <form method="get" action="{% url 'bookings:select_showtime' movie.pk %}" class="mb-3">
+    <label>Select Cinema</label>
+    <select name="cinema" class="input" onchange="this.form.submit()">
+      <option value="">All cinemas</option>
+      {% for c in cinemas %}
+        <option value="{{ c.id }}" {% if selected_cinema == c.id %}selected{% endif %}>{{ c.name }}</option>
+      {% endfor %}
+    </select>
+    {% if selected_date %}<input type="hidden" name="date" value="{{ selected_date }}">{% endif %}
+  </form>
+
+  <label class="label-row">Select Date</label>
+  <div class="date-strip">
+    {% for d in dates %}
+      <a href="?date={{ d|date:'Y-m-d' }}{% if selected_cinema %}&cinema={{ selected_cinema }}{% endif %}"
+         class="date-chip {% if selected_date == d|date:'Y-m-d' %}selected{% endif %}">
+        <div class="dow">{{ d|date:"D" }}</div>
+        <div class="day">{{ d|date:"d" }}</div>
+      </a>
+    {% empty %}
+      <p class="muted">No showtimes available.</p>
+    {% endfor %}
+  </div>
+
+  <label class="label-row mt-3">Available Showtimes</label>
+  <div class="time-strip">
+    {% for st in showtimes %}
+      <a href="{% url 'bookings:seat_selection' st.pk %}" class="time-chip {% if st.is_sold_out %}sold-out{% endif %}">
+        {% if st.is_sold_out %}&#128274;&nbsp;{% endif %}{{ st.time|time:"g:i A" }}
+      </a>
+    {% empty %}
+      <p class="muted">Pick a date to see showtimes.</p>
+    {% endfor %}
+  </div>
+
+  <p class="muted mt-2">Weekday prices apply</p>
+</div>
+{% endblock %}

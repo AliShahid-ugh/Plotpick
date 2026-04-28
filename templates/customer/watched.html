@@ -1,0 +1,21 @@
+{% extends "customer/_base.html" %}
+{% block title %}Watched Movies — PlotPick{% endblock %}
+
+{% block content %}
+<div class="container" style="padding-top:24px;">
+  <h2>Watched Movies</h2>
+  <p class="muted">Movies you've booked tickets for — automatically tracked.</p>
+  <div class="movie-grid mt-3">
+    {% for item in items %}
+      {% include "components/movie_card.html" with movie=item.movie %}
+    {% empty %}
+      <div class="center" style="grid-column:1/-1;padding:80px 20px;">
+        <div style="font-size:64px;color:var(--seat-reserved)">&#127916;</div>
+        <h3 class="mt-2">No watched movies yet</h3>
+        <p class="muted">Book a ticket and it will appear here.</p>
+        <a href="{% url 'movies:list' %}" class="btn btn-primary mt-2">Browse Movies</a>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

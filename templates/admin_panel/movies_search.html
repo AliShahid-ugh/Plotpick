@@ -1,0 +1,45 @@
+{% extends "admin_panel/_base.html" %}
+{% block title %}Search Movie — Admin{% endblock %}
+
+{% block admin_content %}
+<h1 class="admin-breadcrumb">Movies <span class="sep">&gt;</span> Search Movie</h1>
+<div class="admin-subheading">Last Deleted: {{ last_deleted_minutes }} minutes ago</div>
+
+<form method="get" class="movie-form-row">
+  <input type="text" name="title" placeholder="Enter Title" value="{{ request.GET.title }}">
+  <input type="text" name="genre" placeholder="Enter Genre" value="{{ request.GET.genre }}">
+  <input type="text" name="id" placeholder="Enter ID" value="{{ request.GET.id }}">
+  <input type="text" name="year" placeholder="Enter Year" value="{{ request.GET.year }}">
+  <input type="text" name="status" placeholder="Enter Status" value="{{ request.GET.status }}">
+  <button type="submit" class="btn btn-primary">Search</button>
+</form>
+
+<div class="panel">
+  <table class="admin-table">
+    <thead>
+      <tr><th>Title</th><th>Genre</th><th>ID</th><th>Year</th><th>Status</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+      {% for m in movies %}
+        <tr>
+          <td>{{ m.title }}</td>
+          <td>{{ m.primary_genre|default:"—" }}</td>
+          <td>{{ m.id }}</td>
+          <td>{{ m.release_year }}</td>
+          <td>
+            {% if m.status == 'now_showing' %}<span class="pill pill-success">Active</span>
+            {% elif m.status == 'pending' %}<span class="pill pill-warning">Pending</span>
+            {% else %}<span class="pill pill-danger">{{ m.get_status_display }}</span>{% endif %}
+          </td>
+          <td class="actions">
+            <a href="{% url 'adminpanel:movies_edit' %}" class="btn btn-primary btn-sm">Edit</a>
+            <a href="{% url 'adminpanel:movies_delete' %}" class="btn btn-primary btn-sm">Delete</a>
+          </td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="6" class="muted">No movies match your search.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

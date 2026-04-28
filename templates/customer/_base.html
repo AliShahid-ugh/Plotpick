@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block body %}
+{% include "components/navbar.html" %}
+
+<main class="page">
+  {% block content %}{% endblock %}
+</main>
+
+<footer class="footer">
+  <div class="container">© 2024 PlotPick. All rights reserved.</div>
+</footer>
+{% endblock %}

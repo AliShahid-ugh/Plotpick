@@ -1,0 +1,45 @@
+{% load static %}
+<div class="movie-card">
+  {% if user.is_authenticated %}
+    <form method="post" action="{% url 'movies:toggle_watchlist' movie.pk %}">
+      {% csrf_token %}
+      <button class="heart-btn {% if movie.id in watchlist_ids %}active{% endif %}" type="submit" aria-label="Toggle watchlist">
+        {% if movie.id in watchlist_ids %}&hearts;{% else %}&#9825;{% endif %}
+      </button>
+    </form>
+  {% endif %}
+  <a href="{% url 'movies:detail' movie.pk %}" class="poster" {% if movie.poster %}style="background-image:url({{ movie.poster.url }})"{% endif %}>
+    {% if movie.badge == 'trending' %}<span class="pill pill-trending" style="position:absolute;top:8px;left:8px;">&#128293; Trending</span>{% endif %}
+    {% if movie.badge == 'new' %}<span class="pill pill-new" style="position:absolute;top:8px;left:8px;">&#10024; New</span>{% endif %}
+    {% if movie.badge == 'vip' %}<span class="pill pill-vip" style="position:absolute;top:8px;left:8px;">&#128081; VIP</span>{% endif %}
+    {% if not movie.poster %}&#127916;{% endif %}
+  </a>
+  <div class="body">
+    <a href="{% url 'movies:detail' movie.pk %}" style="color:inherit;">
+      <div class="title">{{ movie.title }}</div>
+    </a>
+    {% if movie.primary_genre %}<span class="pill pill-genre">{{ movie.primary_genre }}</span>{% endif %}
+    <div class="stars">
+      {% with movie.star_rating|default:4 as sr %}
+        {% if sr >= 1 %}&#9733;{% else %}&#9734;{% endif %}
+        {% if sr >= 2 %}&#9733;{% else %}&#9734;{% endif %}
+        {% if sr >= 3 %}&#9733;{% else %}&#9734;{% endif %}
+        {% if sr >= 4 %}&#9733;{% else %}&#9734;{% endif %}
+        {% if sr >= 5 %}&#9733;{% else %}&#9734;{% endif %}
+      {% endwith %}
+    </div>
+    <div class="card-actions">
+      {% if user.is_authenticated %}
+        <a href="{% url 'bookings:select_showtime' movie.pk %}" class="btn btn-primary btn-sm btn-block">Book Now</a>
+        <form method="post" action="{% url 'movies:toggle_watchlist' movie.pk %}">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-secondary btn-sm btn-block">
+            {% if movie.id in watchlist_ids %}In Watchlist &hearts;{% else %}Add to Watchlist{% endif %}
+          </button>
+        </form>
+      {% else %}
+        <a href="{% url 'movies:detail' movie.pk %}" class="btn btn-primary btn-sm btn-block">Watch Now</a>
+      {% endif %}
+    </div>
+  </div>
+</div>

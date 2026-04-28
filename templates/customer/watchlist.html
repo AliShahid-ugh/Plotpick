@@ -1,0 +1,20 @@
+{% extends "customer/_base.html" %}
+{% block title %}My Watchlist — PlotPick{% endblock %}
+
+{% block content %}
+<div class="container" style="padding-top:24px;">
+  <h2>My Watchlist</h2>
+  <div class="movie-grid mt-3">
+    {% for item in items %}
+      {% include "components/movie_card.html" with movie=item.movie watchlist_ids=watchlist_ids %}
+    {% empty %}
+      <div class="center" style="grid-column:1/-1;padding:80px 20px;">
+        <div style="font-size:64px;color:var(--seat-reserved)">&#9825;</div>
+        <h3 class="mt-2">Your watchlist is empty</h3>
+        <p class="muted">Tap the heart on movies you want to track.</p>
+        <a href="{% url 'movies:list' %}" class="btn btn-primary mt-2">Browse Movies</a>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends "admin_panel/_base.html" %}
+{% block title %}Delete Movie — Admin{% endblock %}
+
+{% block admin_content %}
+<h1 class="admin-breadcrumb">Movies <span class="sep">&gt;</span> Delete Movie</h1>
+<div class="admin-subheading">Last Deleted: {{ last_deleted_minutes }} minutes ago</div>
+
+<form method="post">
+  {% csrf_token %}
+  <div class="movie-form-row two-row">
+    <input type="text" name="title" placeholder="Enter Title" required>
+    <input type="text" name="genre" placeholder="Enter Genre">
+    <input type="text" name="id_val" placeholder="Enter ID">
+    <input type="text" name="year" placeholder="Enter Year">
+    <input type="text" name="status" placeholder="Enter Status">
+  </div>
+  <div class="center mt-3">
+    <button type="submit" class="btn btn-primary btn-lg">Delete</button>
+  </div>
+</form>
+{% endblock %}

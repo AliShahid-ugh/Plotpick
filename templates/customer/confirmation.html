@@ -1,0 +1,28 @@
+{% extends "customer/_base.html" %}
+{% block title %}Booking Confirmed — PlotPick{% endblock %}
+
+{% block content %}
+<div class="container" style="padding:64px 0;max-width:560px;">
+  <div class="card center">
+    <div class="success-circle">&check;</div>
+    <h2>Booking Confirmed!</h2>
+    <p class="muted mb-3">Your booking reference is <strong class="gold">{{ booking.reference }}</strong></p>
+
+    <div class="qr-placeholder"></div>
+
+    <div class="stack-md mt-3" style="text-align:left;">
+      <div class="seat-line"><span>Movie</span><strong>{{ booking.showtime.movie.title }}</strong></div>
+      <div class="seat-line"><span>Cinema</span><strong>{{ booking.showtime.cinema.name }}</strong></div>
+      <div class="seat-line"><span>Date</span><strong>{{ booking.showtime.date|date:"D, M j, Y" }}</strong></div>
+      <div class="seat-line"><span>Time</span><strong>{{ booking.showtime.time|time:"g:i A" }}</strong></div>
+      <div class="seat-line"><span>Seats</span><strong>{{ booking.seat_labels }}</strong></div>
+      <div class="seat-line gold"><span>Total</span><strong>${{ booking.total }}</strong></div>
+    </div>
+
+    <div class="row mt-3" style="justify-content:center;">
+      <a href="{% url 'bookings:ticket' booking.reference %}" class="btn btn-primary">Download Ticket</a>
+      <a href="{% url 'bookings:my_bookings' %}" class="btn btn-secondary">My Bookings</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

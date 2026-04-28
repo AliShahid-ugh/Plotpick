@@ -1,0 +1,83 @@
+{% extends "admin_panel/_base.html" %}
+{% load humanize %}
+{% block title %}Admin Dashboard — PlotPick{% endblock %}
+
+{% block admin_content %}
+<div class="admin-header">
+  <h1>Dashboard</h1>
+  <div class="date">{{ today|date:"F j, Y" }}</div>
+</div>
+
+<div class="stat-grid">
+  <div class="stat-card">
+    <div class="value">${{ total_revenue|floatformat:0|intcomma }}</div>
+    <div class="label">Total Revenue</div>
+  </div>
+  <div class="stat-card">
+    <div class="value">{{ tickets_sold|intcomma }}</div>
+    <div class="label">Tickets Sold</div>
+  </div>
+  <div class="stat-card">
+    <div class="value">{{ active_movies }}</div>
+    <div class="label">Active Movies</div>
+  </div>
+  <div class="stat-card">
+    <div class="value">{{ users_today }}</div>
+    <div class="label">Users Today</div>
+  </div>
+</div>
+
+<div class="dash-row">
+  <div class="panel">
+    <h3>Revenue (2024)</h3>
+    <div class="chart">
+      {% for item in revenue_chart %}
+        <div class="bar-wrap">
+          <div class="bar" style="height:{% widthratio item.value 15000 200 %}px;"></div>
+          <div class="bar-label">{{ item.label }}</div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="panel">
+    <h3>Budget Overview</h3>
+    <div class="budget-row"><span>Budget Allocated:</span><span>${{ budget_allocated|floatformat:0|intcomma }}</span></div>
+    <div class="budget-row"><span>Budget Used:</span><span>${{ budget_used|floatformat:0|intcomma }}</span></div>
+    <a href="#" class="accent mt-2" style="display:block;">Manage Budget &rarr;</a>
+  </div>
+</div>
+
+<div class="dash-row" style="grid-template-columns:2fr 1fr;">
+  <div class="panel">
+    <h3>Recent Bookings</h3>
+    <table class="admin-table">
+      <thead><tr><th>Movie</th><th>Date</th><th>Seats</th><th>Amount</th></tr></thead>
+      <tbody>
+        {% for b in recent_bookings %}
+          <tr>
+            <td>{{ b.showtime.movie.title }}</td>
+            <td>{{ b.created_at|date:"M j" }}</td>
+            <td>{{ b.seats.count }}</td>
+            <td>${{ b.total }}</td>
+          </tr>
+        {% empty %}
+          <tr><td>Inception</td><td>Apr 20</td><td>2</td><td>$24.00</td></tr>
+          <tr><td>Dune II</td><td>Apr 21</td><td>3</td><td>$36.00</td></tr>
+          <tr><td>The Batman</td><td>Apr 22</td><td>1</td><td>$12.00</td></tr>
+          <tr><td>Oppenheimer</td><td>Apr 23</td><td>4</td><td>$48.00</td></tr>
+          <tr><td>Avatar 2</td><td>Apr 24</td><td>2</td><td>$24.00</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="panel">
+    <h3>Quick Actions</h3>
+    <div class="quick-actions">
+      <a href="{% url 'adminpanel:movies_add' %}" class="btn btn-primary btn-block">Add Movie</a>
+      <a href="{% url 'adminpanel:pricing_edit' %}" class="btn btn-primary btn-block">Set Prices</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

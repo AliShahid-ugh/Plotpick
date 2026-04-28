@@ -1,0 +1,45 @@
+{% extends "admin_panel/_base.html" %}
+{% block title %}Movies — Admin{% endblock %}
+
+{% block admin_content %}
+<h1 class="admin-breadcrumb">Movies</h1>
+
+<div class="row mb-3" style="justify-content:center;gap:40px;margin-top:16px;">
+  <a href="{% url 'adminpanel:movies_add' %}" class="btn btn-primary">Add Movie</a>
+  <a href="{% url 'adminpanel:movies_search' %}" class="btn btn-primary">Search Movie</a>
+  <a href="{% url 'adminpanel:movies_delete' %}" class="btn btn-primary">Delete Movie</a>
+</div>
+
+<div class="stat-grid">
+  <div class="stat-card"><div class="value">{{ stats.total }}</div><div class="label">Total Movies</div></div>
+  <div class="stat-card"><div class="value">{{ stats.active }}</div><div class="label">Active Movies</div></div>
+  <div class="stat-card"><div class="value">{{ stats.genres }}</div><div class="label">Genres</div></div>
+  <div class="stat-card"><div class="value">{{ stats.avg_rating }}</div><div class="label">Average Rating</div></div>
+</div>
+
+<div class="panel">
+  <table class="admin-table">
+    <thead>
+      <tr><th>Title</th><th>Genre</th><th>ID</th><th>Year</th><th>Status</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+      {% for m in movies %}
+        <tr>
+          <td>{{ m.title }}</td>
+          <td>{{ m.primary_genre|default:"—" }}</td>
+          <td>{{ m.id }}</td>
+          <td>{{ m.release_year }}</td>
+          <td>
+            {% if m.status == 'now_showing' %}<span class="pill pill-success">Active</span>
+            {% elif m.status == 'pending' %}<span class="pill pill-warning">Pending</span>
+            {% else %}<span class="pill pill-danger">{{ m.get_status_display }}</span>{% endif %}
+          </td>
+          <td><a href="{% url 'adminpanel:movies_edit' %}" class="btn btn-primary btn-sm">Edit</a></td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="6" class="muted">No movies yet. Seed the database or use Add Movie.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

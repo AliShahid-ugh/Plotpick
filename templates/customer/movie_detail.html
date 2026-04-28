@@ -1,0 +1,125 @@
+{% extends "customer/_base.html" %}
+{% block title %}{{ movie.title }} — PlotPick{% endblock %}
+
+{% block content %}
+<div class="detail-banner" {% if movie.backdrop %}style="background-image:url({{ movie.backdrop.url }})"{% endif %}></div>
+<div class="container">
+  <div class="detail-info">
+    <div class="detail-poster" {% if movie.poster %}style="background-image:url({{ movie.poster.url }})"{% endif %}></div>
+    <div class="detail-meta">
+      <h1>{{ movie.title }}</h1>
+      <div class="badges">
+        {% if movie.primary_genre %}<span class="pill pill-genre">{{ movie.primary_genre }}</span>{% endif %}
+        {% for g in movie.genres.all %}<span class="pill pill-genre">{{ g.name }}</span>{% endfor %}
+      </div>
+      <div class="rating-row">
+        <span class="star-rating static">
+          {% for i in "12345"|slice:":5" %}
+            <span class="star {% if forloop.counter <= movie.star_rating %}on{% endif %}">&#9733;</span>
+          {% endfor %}
+        </span>
+        <span>{{ movie.rating }}/10</span>
+      </div>
+      <div class="runtime">Runtime: {{ movie.runtime_minutes }} min</div>
+    </div>
+  </div>
+
+  <div class="detail-body">
+    <section>
+      <h3>Synopsis</h3>
+      <p>{{ movie.synopsis|default:"No synopsis available." }}</p>
+    </section>
+
+    {% if movie.cast_list %}
+    <section>
+      <h3>Cast</h3>
+      <div class="cast-row mt-2">
+        {% for c in movie.cast_list %}
+          <div class="cast-member">
+            <div class="cast-avatar"></div>
+            <div class="cast-name">{{ c }}</div>
+          </div>
+        {% endfor %}
+      </div>
+    </section>
+    {% endif %}
+
+    {% if showtimes %}
+    <section>
+      <h3>Showtimes</h3>
+      <div class="time-strip mt-2">
+        {% for st in showtimes %}
+          {% if is_guest %}
+            <span class="time-chip"><span class="muted">&#128274;</span>&nbsp; {{ st.time|time:"g:i A" }}</span>
+          {% else %}
+            <a href="{% url 'bookings:select_showtime' movie.pk %}?date={{ st.date|date:'Y-m-d' }}&cinema={{ st.cinema.id }}"
+               class="time-chip {% if st.is_sold_out %}sold-out{% endif %}">{{ st.time|time:"g:i A" }}</a>
+          {% endif %}
+        {% endfor %}
+      </div>
+      {% if is_guest %}
+        <p class="muted mt-2">Login to view showtimes and book tickets.</p>
+      {% endif %}
+    </section>
+    {% endif %}
+
+    <section>
+      {% if user.is_authenticated %}
+        <div class="action-panel" style="max-width:420px;">
+          <a href="{% url 'bookings:select_showtime' movie.pk %}" class="btn btn-primary btn-block">Book Tickets</a>
+          <form method="post" action="{% url 'movies:toggle_watchlist' movie.pk %}">
+            {% csrf_token %}
+            <button class="btn btn-secondary btn-block" type="submit">
+              {% if in_watchlist %}&hearts; In Watchlist{% else %}&#9825; Add to Watchlist{% endif %}
+            </button>
+          </form>
+        </div>
+      {% else %}
+        <div class="action-panel" style="max-width:420px;">
+          <button class="btn btn-primary btn-block" disabled>Book Tickets</button>
+          <button class="btn btn-secondary btn-block" disabled>&#9825; Add to Watchlist</button>
+          <small class="muted center">Login or Sign Up to book tickets</small>
+        </div>
+      {% endif %}
+    </section>
+
+    {% if user.is_authenticated %}
+    <section>
+      <h3>{% if user_review %}Your Review{% else %}Leave a Review{% endif %}</h3>
+      <form method="post" action="{% url 'movies:submit_review' movie.pk %}" class="mt-2" style="max-width:600px;">
+        {% csrf_token %}
+        <label class="mb-1" style="display:block;">Your Rating</label>
+        <div class="star-rating interactive" style="font-size:24px;">
+          <span class="star">&#9733;</span><span class="star">&#9733;</span><span class="star">&#9733;</span>
+          <span class="star">&#9733;</span><span class="star">&#9733;</span>
+        </div>
+        <input type="hidden" name="stars" value="{{ user_review.stars|default:5 }}">
+        <textarea name="text" id="review-text" maxlength="500" data-counter placeholder="Share your thoughts..." class="mt-2">{{ user_review.text|default:"" }}</textarea>
+        <div class="muted mt-1" style="text-align:right;" data-counter-for="review-text">0/500</div>
+        <button class="btn btn-primary mt-2" type="submit">{% if user_review %}Update Review{% else %}Submit Review{% endif %}</button>
+      </form>
+    </section>
+    {% endif %}
+
+    {% if reviews %}
+    <section>
+      <h3>Reviews</h3>
+      <div class="mt-2">
+        {% for r in reviews %}
+          <div class="review-card">
+            <div class="avatar">{{ r.user.initial }}</div>
+            <div>
+              <div class="name">{{ r.user.display_name }}</div>
+              <div class="stars">
+                {% for i in "12345"|slice:":5" %}{% if forloop.counter <= r.stars %}&#9733;{% else %}&#9734;{% endif %}{% endfor %}
+              </div>
+              <div>{{ r.text }}</div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </section>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,70 @@
+{% extends "customer/_base.html" %}
+{% block title %}Home — PlotPick{% endblock %}
+
+{% block content %}
+<section style="background:linear-gradient(90deg,var(--bg-surface),var(--bg-primary));padding:40px 0;">
+  <div class="container">
+    <h2>Welcome back, {{ user.display_name }} &#128075;</h2>
+    <p class="muted">Here's what's showing today</p>
+  </div>
+</section>
+
+{% if recommendations %}
+<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <h3 class="gold">&#10024; Movies You Might Like</h3>
+    </div>
+    <div class="movie-row">
+      {% for movie in recommendations %}
+        {% include "components/movie_card.html" with movie=movie %}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <h2>Now Showing</h2>
+      <a href="{% url 'movies:list' %}" class="see-all">See All &rarr;</a>
+    </div>
+    <div class="movie-row">
+      {% for movie in now_showing %}
+        {% include "components/movie_card.html" with movie=movie %}
+      {% empty %}
+        <p class="muted">No movies available yet.</p>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <h2>Coming Soon</h2>
+    </div>
+    <div class="movie-row">
+      {% for movie in coming_soon %}
+        {% include "components/movie_card.html" with movie=movie %}
+      {% empty %}
+        <p class="muted">No upcoming releases.</p>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container" style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+    <a href="{% url 'bookings:my_bookings' %}" class="card" style="display:flex;justify-content:space-between;align-items:center;color:inherit;">
+      <span style="font-family:var(--font-head);font-size:20px;font-weight:600;">&#127903; My Bookings</span>
+      <span class="accent">&rarr;</span>
+    </a>
+    <a href="{% url 'movies:watchlist' %}" class="card" style="display:flex;justify-content:space-between;align-items:center;color:inherit;">
+      <span style="font-family:var(--font-head);font-size:20px;font-weight:600;">&hearts; My Watchlist</span>
+      <span class="accent">&rarr;</span>
+    </a>
+  </div>
+</section>
+{% endblock %}

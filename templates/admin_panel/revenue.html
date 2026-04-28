@@ -1,0 +1,55 @@
+{% extends "admin_panel/_base.html" %}
+{% load humanize %}
+{% block title %}Revenue Reports — Admin{% endblock %}
+
+{% block admin_content %}
+<h1 class="admin-breadcrumb">Revenue Reports</h1>
+
+<form method="get" class="date-filter-row mt-3">
+  <label>From</label>
+  <input type="text" name="from" placeholder="Jan 1, 2024" value="{{ request.GET.from|default:'Jan 1, 2024' }}">
+  <label>To</label>
+  <input type="text" name="to" placeholder="Dec 31, 2024" value="{{ request.GET.to|default:'Dec 31, 2024' }}">
+  <button type="submit" class="btn btn-primary">Apply</button>
+</form>
+
+<div class="stat-grid" style="grid-template-columns:repeat(3,1fr);">
+  <div class="stat-card"><div class="value">${{ total_revenue|floatformat:0|intcomma }}</div><div class="label">Total Revenue</div></div>
+  <div class="stat-card"><div class="value">{{ total_bookings|intcomma }}</div><div class="label">Total Bookings</div></div>
+  <div class="stat-card"><div class="value">{{ top_movie_title }}</div><div class="label">Top Movie</div></div>
+</div>
+
+<div class="full-chart mt-3">
+  <h3>Monthly Revenue (Jan - Dec)</h3>
+  <div class="chart">
+    {% for item in monthly %}
+      <div class="bar-wrap">
+        <div class="bar" style="height:{% widthratio item.value 7000 220 %}px;"></div>
+        <div class="bar-label">{{ item.label }}</div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+<div class="detailed-breakdown mt-3">
+  <div class="detailed-breakdown-head">
+    <h3>Detailed Breakdown</h3>
+    <button type="button" class="btn btn-primary btn-sm">Export CSV</button>
+  </div>
+  <table class="admin-table">
+    <thead>
+      <tr><th>Movie</th><th>Tickets Sold</th><th>Revenue</th><th>Avg. Ticket</th></tr>
+    </thead>
+    <tbody>
+      {% for row in breakdown %}
+        <tr>
+          <td>{{ row.movie }}</td>
+          <td>{{ row.date }}</td>
+          <td>${{ row.revenue }}</td>
+          <td>${{ row.avg }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

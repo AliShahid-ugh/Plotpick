@@ -1,0 +1,50 @@
+{% extends "admin_panel/_base.html" %}
+{% block title %}Pricing — Admin{% endblock %}
+
+{% block admin_content %}
+<h1 class="admin-breadcrumb">Pricing</h1>
+
+<h3 class="muted mb-2">Streaming subscription plans</h3>
+<div class="pricing-grid">
+  {% for plan in plans %}
+    <div class="plan-card {% if plan.is_popular %}popular{% endif %}">
+      {% if plan.is_popular %}<span class="most-popular">Most Popular</span>{% endif %}
+      <div class="plan-name">{{ plan.display_name }}</div>
+      <div class="price">${{ plan.price }}</div>
+      <div class="muted">{% if plan.price == 0 %}forever{% else %}per month{% endif %}</div>
+      <ul class="feature-list">
+        <li>5 Movies / month</li>
+        <li>HD Streaming</li>
+        <li>Offline Downloads</li>
+        <li>Cinema Discounts</li>
+      </ul>
+      <a href="{% url 'adminpanel:pricing_edit' %}" class="btn btn-primary btn-sm">Edit Plan</a>
+    </div>
+  {% empty %}
+    <p class="muted">No plans configured. <a href="{% url 'adminpanel:pricing_edit' %}" class="accent">Create plans</a></p>
+  {% endfor %}
+</div>
+
+<h3 class="muted mb-2">Cinema Seat Pricing</h3>
+<div class="seat-pricing-grid">
+  {% for seat in seat_types %}
+    <div class="seat-card">
+      <div class="name">{{ seat.display_name }}</div>
+      <div class="price">${{ seat.price }}</div>
+      <div class="desc">{{ seat.description }}</div>
+      {% if seat.stock_status == 'available' %}<span class="pill pill-success">Available</span>
+      {% elif seat.stock_status == 'limited' %}<span class="pill pill-warning">Limited</span>
+      {% else %}<span class="pill pill-danger">Low Stock</span>{% endif %}
+      <a href="{% url 'adminpanel:pricing_edit' %}" class="btn btn-primary btn-sm">Edit Plan</a>
+    </div>
+  {% endfor %}
+</div>
+
+<h3 class="muted mb-2">Overview</h3>
+<div class="stat-grid">
+  <div class="stat-card"><div class="value" style="color:var(--text-primary)">{{ overview.paid_subscribers }}</div><div class="label">Paid Subscribers</div><small class="gold">+91 this week</small></div>
+  <div class="stat-card"><div class="value" style="color:var(--text-primary)">{{ overview.seats_booked }}</div><div class="label">Seats Booked</div><small class="gold">+220 this week</small></div>
+  <div class="stat-card"><div class="value" style="color:var(--text-primary)">${{ overview.avg_seat_revenue }}</div><div class="label">Avg Seat Revenue</div><small class="muted">per booking</small></div>
+  <div class="stat-card"><div class="value" style="color:var(--text-primary)">{{ overview.upgrade_rate }}</div><div class="label">Upgrade rate</div><small class="muted">free → paid</small></div>
+</div>
+{% endblock %}

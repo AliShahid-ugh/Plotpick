@@ -1,0 +1,33 @@
+{% extends "customer/_base.html" %}
+{% block title %}My Bookings — PlotPick{% endblock %}
+
+{% block content %}
+<div class="container" style="padding-top:24px;">
+  <a href="{% url 'movies:home' %}" class="muted">&larr;</a>
+  <h2 class="mt-2">My Bookings</h2>
+
+  <div class="tab-row mt-2">
+    <a class="tab {% if active_tab == 'upcoming' %}active{% endif %}" href="?tab=upcoming">Upcoming</a>
+    <a class="tab {% if active_tab == 'past' %}active{% endif %}" href="?tab=past">Past</a>
+    <a class="tab {% if active_tab == 'cancelled' %}active{% endif %}" href="?tab=cancelled">Cancelled</a>
+  </div>
+
+  {% for b in bookings %}
+    <div class="booking-row">
+      <div class="thumb" {% if b.showtime.movie.poster %}style="background-image:url({{ b.showtime.movie.poster.url }});background-size:cover;"{% endif %}></div>
+      <div class="info">
+        <h4>{{ b.showtime.movie.title }}</h4>
+        <small>{{ b.showtime.date|date:"D, M j, Y" }} &middot; {{ b.showtime.time|time:"g:i A" }} &middot; {{ b.showtime.cinema.name }}</small><br>
+        <small>Seats: {{ b.seat_labels }}</small>
+      </div>
+      <div class="actions">
+        <span class="pill pill-success">{{ b.get_status_display }}</span>
+        <a href="{% url 'bookings:ticket' b.reference %}" class="btn btn-secondary btn-sm">Download Ticket</a>
+        <a href="{% url 'bookings:confirmation' b.reference %}" class="btn btn-ghost btn-sm accent">View Details</a>
+      </div>
+    </div>
+  {% empty %}
+    <p class="muted mt-3">No bookings in this tab.</p>
+  {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,72 @@
+{% extends "admin_panel/_base.html" %}
+{% block title %}Settings — Admin{% endblock %}
+
+{% block admin_content %}
+<h1 class="admin-breadcrumb">Settings</h1>
+
+<div class="profile-card">
+  <div class="big-avatar">{{ user.initial }}</div>
+  <div>
+    <h3>Admin User</h3>
+    <span class="pill pill-admin">SuperAdmin</span>
+    <div class="email">{{ user.email }}</div>
+    <div class="email">Role: Administrator</div>
+  </div>
+</div>
+
+<div class="settings-grid">
+  <div class="panel">
+    <h3>Change Password</h3>
+    <form method="post" class="stack-md">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="password">
+      <div class="form-group">
+        <label>Current Password</label>
+        {{ password_form.current_password }}
+        {% if password_form.current_password.errors %}<span class="form-error">{{ password_form.current_password.errors.0 }}</span>{% endif %}
+      </div>
+      <div class="form-group">
+        <label>New Password</label>
+        {{ password_form.new_password }}
+        {% if password_form.new_password.errors %}<span class="form-error">{{ password_form.new_password.errors.0 }}</span>{% endif %}
+      </div>
+      <div class="form-group">
+        <label>Confirm New Password</label>
+        {{ password_form.confirm_new_password }}
+        {% if password_form.confirm_new_password.errors %}<span class="form-error">{{ password_form.confirm_new_password.errors.0 }}</span>{% endif %}
+      </div>
+      <button type="submit" class="btn btn-primary">Update Password</button>
+    </form>
+  </div>
+
+  <div class="panel">
+    <h3>System Settings</h3>
+    <form method="post" class="mt-2">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="toggle">
+      <div class="setting-row">
+        <span>Enable Email Notifications</span>
+        <span class="toggle">
+          <input type="checkbox" name="enable_email_notifications" {% if site.enable_email_notifications %}checked{% endif %}>
+          <span class="slider"></span>
+        </span>
+      </div>
+      <div class="setting-row">
+        <span>Maintenance Mode</span>
+        <span class="toggle">
+          <input type="checkbox" name="maintenance_mode" {% if site.maintenance_mode %}checked{% endif %}>
+          <span class="slider"></span>
+        </span>
+      </div>
+      <div class="setting-row">
+        <span>Allow Guest Browsing</span>
+        <span class="toggle">
+          <input type="checkbox" name="allow_guest_browsing" {% if site.allow_guest_browsing %}checked{% endif %}>
+          <span class="slider"></span>
+        </span>
+      </div>
+      <button type="submit" class="btn btn-primary mt-3">Save Settings</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

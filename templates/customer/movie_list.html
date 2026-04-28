@@ -1,0 +1,30 @@
+{% extends "customer/_base.html" %}
+{% block title %}Browse Movies — PlotPick{% endblock %}
+
+{% block content %}
+<div class="container" style="padding-top:32px;">
+  <form method="get" action="{% url 'movies:list' %}">
+    <input type="search" name="q" class="search-pill" placeholder="&#128269; Search movies, genres..." value="{{ search_query }}">
+  </form>
+
+  <div class="chip-row">
+    {% for g in genres %}
+      <a href="?genre={{ g }}{% if search_query %}&q={{ search_query }}{% endif %}"
+         class="chip {% if active_genre == g %}active{% endif %}">{{ g }}</a>
+    {% endfor %}
+  </div>
+
+  <h2>Now Showing</h2>
+  <div class="movie-grid mt-3">
+    {% for movie in movies %}
+      {% include "components/movie_card.html" with movie=movie %}
+    {% empty %}
+      <div class="center" style="grid-column:1/-1;padding:80px 20px;">
+        <div style="font-size:64px;color:var(--seat-reserved)">&#127916;</div>
+        <h3 class="mt-2">No results found</h3>
+        <p class="muted">Try adjusting your filters</p>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

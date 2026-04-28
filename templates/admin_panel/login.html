@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Admin Portal — PlotPick{% endblock %}
+
+{% block body %}
+<div class="admin-login-shell">
+  <div class="admin-login-card">
+    <h2>Admin Portal</h2>
+    {% if form.non_field_errors %}
+      <div class="toast error">{{ form.non_field_errors.0 }}</div>
+    {% endif %}
+    <form method="post" class="stack-md">
+      {% csrf_token %}
+      <div class="form-group">{{ form.email }}</div>
+      <div class="form-group">
+        <div class="password-wrap">
+          {{ form.password }}
+          <button type="button" class="password-toggle">&#128065;</button>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary btn-block btn-lg">Login as Admin</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

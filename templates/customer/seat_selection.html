@@ -1,0 +1,55 @@
+{% extends "customer/_base.html" %}
+{% block title %}Seat Selection — {{ movie.title }}{% endblock %}
+
+{% block content %}
+<div class="container" style="padding-top:24px;">
+  <div class="movie-summary">
+    <div class="thumb" {% if movie.poster %}style="background-image:url({{ movie.poster.url }});background-size:cover;"{% endif %}></div>
+    <div>
+      <h3>{{ movie.title }}</h3>
+      <small class="muted">{{ showtime.cinema.name }} · {{ showtime.date|date:"D, M j" }} · {{ showtime.time|time:"g:i A" }}</small>
+    </div>
+  </div>
+
+  <div class="seat-legend">
+    <span><span class="swatch swatch-available"></span> Available</span>
+    <span><span class="swatch swatch-selected"></span> Selected</span>
+    <span><span class="swatch swatch-reserved"></span> Reserved</span>
+    <span><span class="swatch swatch-vip"></span> VIP</span>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 300px;gap:24px;">
+    <form method="post" id="seat-form" action="{% url 'bookings:payment' showtime.pk %}">
+      {% csrf_token %}
+      <div class="screen"></div>
+      <div class="screen-label">SCREEN</div>
+      <div class="seat-grid">
+        {% for row in row_data %}
+          <div class="seat-row">
+            <div class="seat-row-label">{{ row.label }}</div>
+            {% for seat in row.seats %}
+              <button type="button"
+                      class="seat {{ seat.category }} {% if seat.is_reserved %}reserved{% endif %}"
+                      data-seat-id="{{ seat.id }}"
+                      data-label="{{ seat.label }}"
+                      data-category="{{ seat.category }}"
+                      data-price="{{ seat.price }}"
+                      {% if seat.is_reserved %}disabled title="Reserved"{% else %}title="{{ seat.label }} · ${{ seat.price }}"{% endif %}>
+                {{ seat.number }}
+              </button>
+              <input type="checkbox" name="seats" value="{{ seat.id }}" class="hidden">
+            {% endfor %}
+          </div>
+        {% endfor %}
+      </div>
+    </form>
+
+    <aside class="seat-summary">
+      <h3>Your Selection</h3>
+      <div id="selection-list" class="stack-md"><p class="muted">No seats selected.</p></div>
+      <div class="seat-total">Subtotal: <span id="seat-subtotal">$0.00</span></div>
+      <button type="submit" form="seat-form" id="seat-submit" class="btn btn-primary btn-block" disabled>Confirm Selection</button>
+    </aside>
+  </div>
+</div>
+{% endblock %}

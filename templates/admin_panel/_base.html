@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/admin.css' %}">{% endblock %}
+
+{% block body %}
+<div class="admin-shell">
+  <aside class="admin-sidebar">
+    <div class="brand">PlotPick Admin</div>
+    <nav class="admin-nav">
+      <a href="{% url 'adminpanel:dashboard' %}" class="{% if active_nav == 'dashboard' %}active{% endif %}">Dashboard</a>
+      <a href="{% url 'adminpanel:movies' %}" class="{% if active_nav == 'movies' %}active{% endif %}">Movies</a>
+      <a href="{% url 'adminpanel:pricing' %}" class="{% if active_nav == 'pricing' %}active{% endif %}">Pricing</a>
+      <a href="{% url 'adminpanel:revenue' %}" class="{% if active_nav == 'revenue' %}active{% endif %}">Revenue</a>
+      <a href="{% url 'adminpanel:settings' %}" class="{% if active_nav == 'settings' %}active{% endif %}">Settings</a>
+    </nav>
+    <a href="{% url 'adminpanel:logout' %}" class="logout">&larr; Log out</a>
+  </aside>
+
+  <main class="admin-main">
+    {% block admin_content %}{% endblock %}
+  </main>
+</div>
+{% endblock %}

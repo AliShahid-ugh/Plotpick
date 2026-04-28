@@ -1,0 +1,35 @@
+{% extends "customer/_base.html" %}
+{% block title %}Profile — PlotPick{% endblock %}
+
+{% block content %}
+<div class="container" style="padding-top:24px;">
+  <h2>Profile</h2>
+
+  <div class="profile-card mt-3">
+    <div class="big-avatar">{{ user.initial }}</div>
+    <div>
+      <h3>{{ user.display_name }}</h3>
+      <div class="email muted">{{ user.email }}</div>
+    </div>
+  </div>
+
+  <div class="stat-grid mt-3" style="grid-template-columns:repeat(3,1fr);">
+    <div class="stat-card">
+      <div class="value">{{ booking_count }}</div>
+      <div class="label">Bookings</div>
+    </div>
+    <div class="stat-card">
+      <div class="value">{{ review_count }}</div>
+      <div class="label">Reviews</div>
+    </div>
+    <div class="stat-card">
+      <div class="value">{{ watchlist_count }}</div>
+      <div class="label">Watchlist</div>
+    </div>
+  </div>
+
+  <div class="mt-3">
+    <a href="{% url 'accounts:logout' %}" class="btn btn-danger">Log Out</a>
+  </div>
+</div>
+{% endblock %}

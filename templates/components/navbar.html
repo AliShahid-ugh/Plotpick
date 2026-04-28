@@ -1,0 +1,28 @@
+{% load static %}
+<nav class="navbar">
+  <div class="navbar-inner">
+    <a href="{% url 'movies:landing' %}" class="logo">PlotPick</a>
+    <div class="nav-links">
+      {% if user.is_authenticated %}
+        <a class="nav-link {% if active_nav == 'home' %}active{% endif %}" href="{% url 'movies:home' %}">Home</a>
+        <a class="nav-link {% if active_nav == 'list' %}active{% endif %}" href="{% url 'movies:list' %}">Browse Movies</a>
+        <a class="nav-link {% if active_nav == 'bookings' %}active{% endif %}" href="{% url 'bookings:my_bookings' %}">My Bookings</a>
+        <a class="nav-link {% if active_nav == 'watchlist' %}active{% endif %}" href="{% url 'movies:watchlist' %}">Watchlist</a>
+        <a class="nav-link {% if active_nav == 'profile' %}active{% endif %}" href="{% url 'movies:profile' %}">Profile</a>
+      {% else %}
+        <a class="nav-link {% if active_nav == 'home' %}active{% endif %}" href="{% url 'movies:landing' %}">Home</a>
+        <a class="nav-link {% if active_nav == 'list' %}active{% endif %}" href="{% url 'movies:list' %}">Browse Movies</a>
+      {% endif %}
+    </div>
+    <div class="nav-right">
+      {% if user.is_authenticated %}
+        <span class="bell" title="Notifications">&#128276;</span>
+        <a href="{% url 'movies:profile' %}" class="avatar" title="{{ user.display_name }}">{{ user.initial }}</a>
+        <a href="{% url 'accounts:logout' %}" class="btn btn-ghost btn-sm">Log out</a>
+      {% else %}
+        <a href="{% url 'accounts:register' %}" class="btn btn-primary btn-sm">Sign Up</a>
+        <a href="{% url 'accounts:login' %}" class="btn btn-primary btn-sm">Login</a>
+      {% endif %}
+    </div>
+  </div>
+</nav>

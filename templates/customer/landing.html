@@ -1,0 +1,68 @@
+{% extends "customer/_base.html" %}
+{% block title %}PlotPick — The Plot You Love, The Seat You Want{% endblock %}
+
+{% block content %}
+<section class="hero">
+  <div class="hero-backdrop"></div>
+  <div class="hero-content">
+    <h1>The Plot You Love,<br>The Seat You Want.</h1>
+    <p>Discover movies, book seats, enjoy the experience.</p>
+    <a href="{% url 'movies:list' %}" class="btn btn-primary btn-lg">Browse Movies</a>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <h2>Now Showing</h2>
+      <a href="{% url 'movies:list' %}" class="see-all">See All &rarr;</a>
+    </div>
+    <div class="movie-row">
+      {% for movie in now_showing %}
+        {% include "components/movie_card.html" with movie=movie %}
+      {% empty %}
+        <p class="muted">No movies available yet.</p>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <h2>Coming Soon</h2>
+      <a href="{% url 'movies:list' %}" class="see-all">See All &rarr;</a>
+    </div>
+    <div class="movie-row">
+      {% for movie in coming_soon %}
+        {% include "components/movie_card.html" with movie=movie %}
+      {% empty %}
+        <p class="muted">No upcoming releases.</p>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <h2 class="center mb-3">How It Works</h2>
+    <div class="how-it-works">
+      <div class="how-box">
+        <div class="num">01</div>
+        <h3>Browse Movies</h3>
+        <p>Explore what's playing and find your next favorite film.</p>
+      </div>
+      <div class="how-box">
+        <div class="num">02</div>
+        <h3>Choose Your Seat</h3>
+        <p>Pick the perfect seat with our interactive seating plan.</p>
+      </div>
+      <div class="how-box">
+        <div class="num">03</div>
+        <h3>Enjoy the Show</h3>
+        <p>Kick back and relax — your ticket is ready on your phone.</p>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

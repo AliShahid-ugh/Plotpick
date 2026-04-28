@@ -1,0 +1,28 @@
+{% extends "admin_panel/_base.html" %}
+{% block title %}Edit Movie — Admin{% endblock %}
+
+{% block admin_content %}
+<h1 class="admin-breadcrumb">Movies <span class="sep">&gt;</span> Edit Movie</h1>
+<div class="admin-subheading">Last Edited: {{ last_edited_minutes }} minutes ago</div>
+
+<form method="post">
+  {% csrf_token %}
+  <div class="movie-form-row two-row">
+    <input type="text" name="old_title" placeholder="Enter Old Title" required>
+    <input type="text" name="old_genre" placeholder="Enter Old Genre">
+    <input type="text" name="old_id" placeholder="Enter Old ID">
+    <input type="text" name="old_year" placeholder="Enter Old Year">
+    <input type="text" name="old_status" placeholder="Enter Old Status">
+  </div>
+  <div class="movie-form-row two-row">
+    <input type="text" name="new_title" placeholder="Enter New Title">
+    <input type="text" name="new_genre" placeholder="Enter New Genre">
+    <input type="text" name="new_id" placeholder="Enter New ID">
+    <input type="text" name="new_year" placeholder="Enter New Year">
+    <input type="text" name="new_status" placeholder="Enter New Status">
+  </div>
+  <div class="center mt-3">
+    <button type="submit" class="btn btn-primary btn-lg">Edit</button>
+  </div>
+</form>
+{% endblock %}
